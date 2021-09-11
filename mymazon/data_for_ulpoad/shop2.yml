@@ -1,4 +1,4 @@
-shop: Связной
+shop: Другой Связной
 categories:
   - id: 24
     name: Другие Смартфоны
@@ -8,48 +8,48 @@ categories:
     name: Flash-накопители
 
 goods:
-  - id: 4216293
+  - id: 4293
     category: 24
     model: apple/iphone/xs-max
     name: Смартфон Apple iPhone XS Max 512GB (золотистый)
     price: 110001
-    price_rrc: 116991
+    price_rrc: 116999
     quantity: 14
     parameters:
       "Диагональ (дюйм)": 6.5
       "Разрешение (пикс)": 2688x1242
       "Встроенная память (Гб)": 512
       "Цвет": золотистый
-  - id: 4216313
+  - id: 4213
     category: 224
     model: apple/iphone/xr
     name: Смартфон Apple iPhone XR 256GB (красный)
     price: 65001
-    price_rrc: 69991
+    price_rrc: 69999
     quantity: 9
     parameters:
       "Диагональ (дюйм)": 6.1
       "Разрешение (пикс)": 1792x828
       "Встроенная память (Гб)": 256
       "Цвет": красный
-  - id: 4216226
+  - id: 6226
     category: 224
     model: apple/iphone/xr
     name: Смартфон Apple iPhone XR 256GB (черный)
     price: 65001
-    price_rrc: 69991
+    price_rrc: 69999
     quantity: 5
     parameters:
       "Диагональ (дюйм)": 6.1
       "Разрешение (пикс)": 1792x828
       "Встроенная память (Гб)": 256
       "Цвет": черный
-  - id: 4672670
+  - id: 670
     category: 224
     model: apple/iphone/xr
     name: Смартфон Apple iPhone XR 128GB (синий)
     price: 60001
-    price_rrc: 64991
+    price_rrc: 64999
     quantity: 7
     parameters:
       "Диагональ (дюйм)": 6.1

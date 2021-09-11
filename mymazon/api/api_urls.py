@@ -1,9 +1,10 @@
 from django.urls import path
 
 from django_rest_passwordreset.views import reset_password_request_token, reset_password_confirm
-from .views import PartnerUpdate, RegisterAccount, LoginAccount, CategoryView,\
-    ShopView, ProductInfoView, BasketView, AccountDetails, ContactView, OrderView, PartnerState, PartnerOrders,\
-    ConfirmAccount
+from .views import CategoryView, ShopView, ProductInfoView, BasketView, OrderView
+
+from .partner_views import PartnerUpdate, PartnerState, PartnerOrders
+from .account_views import RegisterAccount, LoginAccount, AccountDetails, ConfirmAccount, ContactView
 
 app_name = 'api'
 urlpatterns = [
@@ -19,7 +20,7 @@ urlpatterns = [
     path('user/password_reset/confirm', reset_password_confirm, name='password-reset-confirm'),
     path('categories', CategoryView.as_view(), name='categories'),
     path('shops', ShopView.as_view(), name='shops'),
-    path('products', ProductInfoView.as_view(), name='shops'),
+    path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
     path('order', OrderView.as_view(), name='order'),
 

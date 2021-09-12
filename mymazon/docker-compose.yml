@@ -1,7 +1,60 @@
 version: "3.9"
 
 services:
+  web:
+    build: .
+    restart: always
+    entrypoint: sh
+    command: myscript.sh
+    networks:
+      - myweb
+    depends_on:
+      - db
+      - celery
+    ports:
+      - 8000:8000
+    environment:
+      - EMAIL_PASSWORD=werylongemailpass123
+      - DBHOST=db
+
   redis:
+    restart: always
     image: redis
     ports:
       - 6379:6379
+    networks:
+      - myweb
+
+  celery:
+    build: .
+    restart: always
+    entrypoint: celery
+    command: -A mymazon.celery worker -l INFO -P
+    depends_on:
+      - redis
+    networks:
+      - myweb
+    environment:
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+
+
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: finproj
+      POSTGRES_PASSWORD: finproj
+      POSTGRES_DB: finproj
+    depends_on:
+      - redis
+    networks:
+      - myweb
+
+
+networks:
+  myweb:
+    name: myweb
+    driver: bridge

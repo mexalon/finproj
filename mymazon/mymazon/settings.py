@@ -12,9 +12,6 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 import os
 from pathlib import Path
 
-
-from .my_secrets import EMAIL_PASSWORD
-
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -87,13 +84,15 @@ WSGI_APPLICATION = 'mymazon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+dbhost = os.getenv("DBHOST", '127.0.0.1')
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'finproj',
         'USER': 'finproj',
         'PASSWORD': 'finproj',
-        'HOST': '127.0.0.1',
+        'HOST': f'{dbhost}',
         'PORT': '5432',
     }
 }
@@ -174,14 +173,15 @@ AUTHENTICATION_BACKENDS = (
     ('django.contrib.auth.backends.ModelBackend'),
 )
 
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/1"
+host = os.getenv("REDIS_HOST", "127.0.0.1")
+port = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_URL = os.getenv('REDIS_URL', f'redis://{host}:{port}')
+CELERY_BROKER_URL = REDIS_URL + "/0"
+CELERY_RESULT_BACKEND = REDIS_URL + "/1"
 
-
-# EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'nik683884@gmail.com'
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', EMAIL_PASSWORD)
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST', 'nik683884@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', 'werylongemailpass123')
 EMAIL_HOST_PORT = '465'
 EMAIL_USE_SSL = True
 SERVER_EMAIL = EMAIL_HOST_USER

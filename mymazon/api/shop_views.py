@@ -216,7 +216,6 @@ class OrderView(ModelViewSet):
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        print(f"Заказ изменен: {request.data}")
         send_email.delay("Заказ изменен", f"Новый статус заказа {request.data.get('state')}", [instance.user.email])
         return Response(serializer.data)
 

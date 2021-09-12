@@ -1,3 +1,4 @@
+import json
 from distutils.util import strtobool
 
 from django.core.exceptions import ValidationError
@@ -11,7 +12,7 @@ from yaml import load as load_yaml, Loader
 
 from .models import Shop, Category, ProductInfo, Product, Parameter, ProductParameter, Order
 from .serializers import ShopSerializer, OrderSerializer
-
+from .tasks import send_email
 
 class PartnerUpdate(APIView):
     """
@@ -116,5 +117,7 @@ class PartnerOrders(APIView):
             total_sum=Sum(F('ordered_items__quantity') * F('ordered_items__product_info__price'))).distinct()
 
         serializer = OrderSerializer(order, many=True)
+        content = json.dumps(serializer.data, ensure_ascii=False)
+        send_email.delay("Заказ от клиента", f"Во вложени", [request.user.email], content)
         return Response(serializer.data)
 

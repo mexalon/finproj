@@ -1,10 +1,15 @@
-from django.urls import path
+from django.urls import path, include
 
 from django_rest_passwordreset.views import reset_password_request_token, reset_password_confirm
-from .views import CategoryView, ShopView, ProductInfoView, BasketView, OrderView
+from rest_framework.routers import DefaultRouter
+
+from .shop_views import CategoryView, ShopView, ProductInfoView, BasketView, OrderView
 
 from .partner_views import PartnerUpdate, PartnerState, PartnerOrders
 from .account_views import RegisterAccount, LoginAccount, AccountDetails, ConfirmAccount, ContactView
+
+router = DefaultRouter()
+router.register('order', OrderView, basename='order')
 
 app_name = 'api'
 urlpatterns = [
@@ -22,6 +27,6 @@ urlpatterns = [
     path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
-    path('order', OrderView.as_view(), name='order'),
+    path('', include(router.urls), name='ord')
 
 ]

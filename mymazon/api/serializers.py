@@ -1,6 +1,7 @@
 from rest_framework import serializers
 
-from .models import User, Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact
+from .models import User, Category, Shop, ProductInfo, Product, ProductParameter, OrderItem, Order, Contact,\
+    STATE_CHOICES
 
 
 class ContactSerializer(serializers.ModelSerializer):
@@ -81,6 +82,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
     total_sum = serializers.IntegerField()
     contact = ContactSerializer(read_only=True)
+   # status = serializers.CharField(source='state_display')
 
     class Meta:
         model = Order

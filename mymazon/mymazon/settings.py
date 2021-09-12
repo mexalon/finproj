@@ -39,6 +39,7 @@ PROJ_APPS = [
     'rest_framework.authtoken',
     'django_rest_passwordreset',
     'api.apps.ApiConfig',
+    'django_celery_results'
 
     #   'django_filters',
 ]
@@ -149,14 +150,7 @@ STATIC_URL = '/static/'
 AUTH_USER_MODEL = 'api.User'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_USE_TLS = True
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_HOST_USER = 'nik683884@gmail.com'
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', EMAIL_PASSWORD)
-EMAIL_PORT = '465'
-EMAIL_USE_SSL = True
-SERVER_EMAIL = EMAIL_HOST_USER
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -179,3 +173,15 @@ REST_FRAMEWORK = {
 AUTHENTICATION_BACKENDS = (
     ('django.contrib.auth.backends.ModelBackend'),
 )
+
+CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
+CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/1"
+
+
+# EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'nik683884@gmail.com'
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', EMAIL_PASSWORD)
+EMAIL_HOST_PORT = '465'
+EMAIL_USE_SSL = True
+SERVER_EMAIL = EMAIL_HOST_USER

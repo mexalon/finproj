@@ -13,8 +13,10 @@ from django.http import JsonResponse
 from requests import get
 from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework.viewsets import ModelViewSet
 from ujson import loads as load_json
 from yaml import load as load_yaml, Loader
 
@@ -22,8 +24,9 @@ from .models import Shop, Category, Product, ProductInfo, Parameter, ProductPara
     Contact, ConfirmEmailToken
 from .serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer, ContactSerializer
+from .permissions import OrderUpdatePermission
 from .signals import new_user_registered, new_order
-
+from .tasks import send_email
 
 class CategoryView(ListAPIView):
     """
@@ -163,28 +166,33 @@ class BasketView(APIView):
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
 
 
-class OrderView(APIView):
+class OrderView(ModelViewSet):
     """
-    Класс для получения и размешения заказов пользователями
+    Класс для получения и размешения и редактирования заказов
     """
-
-    # получить мои заказы
-    def get(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
-        order = Order.objects.filter(
-            user_id=request.user.id).exclude(state='basket').prefetch_related(
+    queryset = Order.objects.exclude(state='basket').prefetch_related(
             'ordered_items__product_info__product__category',
             'ordered_items__product_info__product_parameters__parameter').select_related('contact').annotate(
             total_sum=Sum(F('ordered_items__quantity') * F('ordered_items__product_info__price'))).distinct()
+    serializer_class = OrderSerializer
+
+    def get_permissions(self):
+        permissions = [IsAuthenticated]
+        if self.action in ["update", "partial_update", 'destroy']:
+            permissions += [OrderUpdatePermission]
+
+        return [p() for p in permissions]
+
+    # получить список заказов
+    def list(self, request, *args, **kwargs):
+        order = self.queryset.filter(
+            user_id=request.user.id).all()
 
         serializer = OrderSerializer(order, many=True)
         return Response(serializer.data)
 
     # разместить заказ из корзины
-    def post(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
+    def create(self, request, *args, **kwargs):
 
         if {'id', 'contact'}.issubset(request.data):
             if request.data['id'].isdigit():
@@ -202,3 +210,15 @@ class OrderView(APIView):
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
+    def partial_update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        print(f"Заказ изменен: {request.data}")
+        send_email.delay("Заказ изменен", f"Новый статус заказа {request.data.get('state')}", [instance.user.email])
+        return Response(serializer.data)
+
+    def update(self, request, *args, **kwargs):
+        return JsonResponse({'Status': False, 'Errors': 'Метод не разрешён'})

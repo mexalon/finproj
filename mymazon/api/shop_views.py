@@ -1,32 +1,20 @@
-from django.http import HttpResponse
-from django.shortcuts import render
-
-from distutils.util import strtobool
-
-from django.contrib.auth import authenticate
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
-from django.core.validators import URLValidator
 from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
-from requests import get
-from rest_framework.authtoken.models import Token
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from ujson import loads as load_json
-from yaml import load as load_yaml, Loader
 
-from .models import Shop, Category, Product, ProductInfo, Parameter, ProductParameter, Order, OrderItem, \
-    Contact, ConfirmEmailToken
-from .serializers import UserSerializer, CategorySerializer, ShopSerializer, ProductInfoSerializer, \
-    OrderItemSerializer, OrderSerializer, ContactSerializer
+from .models import Shop, Category, ProductInfo, Order, OrderItem
 from .permissions import OrderUpdatePermission
-from .signals import new_user_registered, new_order
+from .serializers import CategorySerializer, ShopSerializer, ProductInfoSerializer, \
+    OrderItemSerializer, OrderSerializer
+from .signals import new_order
 from .tasks import send_email
+
 
 class CategoryView(ListAPIView):
     """

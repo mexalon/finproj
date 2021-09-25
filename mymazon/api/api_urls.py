@@ -27,6 +27,6 @@ urlpatterns = [
     path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
-    path('', include(router.urls), name='ord')
+    path('', include(router.urls))
 
 ]

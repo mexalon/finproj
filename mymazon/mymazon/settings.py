@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ns7i2st$^g2qzskku0a064@tz+xdwy7jh*4v7mvphw40j&1!m0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -35,7 +35,6 @@ PROJ_APPS = [
     'api.apps.ApiConfig',
     'django_celery_results'
 
-    #   'django_filters',
 ]
 
 INSTALLED_APPS = [
@@ -81,16 +80,20 @@ WSGI_APPLICATION = 'mymazon.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-dbhost = os.getenv("DBHOST", '127.0.0.1')
+PG_HOST = os.getenv("PG_HOST", '127.0.0.1')
+PG_NAME = os.getenv("PG_NAME", 'finproj')
+PG_USER = os.getenv("PG_USER", 'finproj')
+PG_PASS = os.getenv("PG_PASS", 'finproj')
+PG_PORT = os.getenv("PG_PORT", '5432')
 
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'finproj',
-        'USER': 'finproj',
-        'PASSWORD': 'finproj',
-        'HOST': f'{dbhost}',
-        'PORT': '5432',
+        'NAME': f'{PG_NAME}',
+        'USER': f'{PG_USER}',
+        'PASSWORD': f'{PG_PASS}',
+        'HOST': f'{PG_HOST}',
+        'PORT': f'{PG_PORT}',
     }
 }
 
@@ -170,9 +173,9 @@ AUTHENTICATION_BACKENDS = (
     ('django.contrib.auth.backends.ModelBackend'),
 )
 
-host = os.getenv("REDIS_HOST", "127.0.0.1")
-port = int(os.getenv("REDIS_PORT", "6379"))
-REDIS_URL = os.getenv('REDIS_URL', f'redis://{host}:{port}')
+R_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
+R_PORT = int(os.getenv("REDIS_PORT", "6379"))
+REDIS_URL = os.getenv('REDIS_URL', f'redis://{R_HOST}:{R_PORT}')
 CELERY_BROKER_URL = REDIS_URL + "/0"
 CELERY_RESULT_BACKEND = REDIS_URL + "/1"
 

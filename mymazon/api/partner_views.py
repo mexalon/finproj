@@ -14,10 +14,12 @@ from .models import Shop, Category, ProductInfo, Product, Parameter, ProductPara
 from .serializers import ShopSerializer, OrderSerializer
 from .tasks import send_email
 
+
 class PartnerUpdate(APIView):
     """
     Класс для обновления прайса от поставщика
     """
+
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
@@ -103,6 +105,7 @@ class PartnerOrders(APIView):
     """
     Класс для получения заказов поставщиками
     """
+
     def get(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)
@@ -120,4 +123,3 @@ class PartnerOrders(APIView):
         content = json.dumps(serializer.data, ensure_ascii=False)
         send_email.delay("Заказ от клиента", f"Во вложени", [request.user.email], content)
         return Response(serializer.data)
-

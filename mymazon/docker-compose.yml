@@ -4,14 +4,24 @@ services:
   web:
     build: .
     restart: always
-    command: bash -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
+    entrypoint: sh
+    command: startscript.sh
     depends_on:
       - db
     ports:
       - 8000:8000
     environment:
-      - EMAIL_PASSWORD=werylongemailpass123
-      - DBHOST=db
+      - EMAIL_HOST=yourhost@gmail.com
+      - EMAIL_PASSWORD=itspass
+      - PG_HOST=db
+      - PG_PORT=5432
+      - PG_NAME=finproj
+      - PG_USER=finproj
+      - PG_PASS=finproj
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
+      - SUPERUSER_EMAIL=admin@admin.com
+      - SUPERUSER_PASSWORD=admin
 
   redis:
     restart: always
@@ -19,15 +29,13 @@ services:
     ports:
       - 6379:6379
 
-
   celery:
     build: .
     restart: always
     entrypoint: celery
-    command: -A mymazon.celery worker -l INFO -P eventlet
+    command: -A mymazon.celery worker -l INFO
     depends_on:
       - redis
-
     environment:
       - REDIS_HOST=redis
       - REDIS_PORT=6379

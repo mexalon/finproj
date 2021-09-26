@@ -190,11 +190,12 @@ class OrderView(ModelViewSet):
                         contact_id=request.data['contact'],
                         state='new')
                 except IntegrityError as error:
-                    print(error)
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        new_order.send(sender=self.__class__, user_id=request.user.id)
+                        # new_order.send(sender=self.__class__, user_id=request.user.id)
+                        send_email.delay("Заказ изменен", f"Новый статус заказа {is_updated.state}",
+                                         [is_updated.user.email])
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})

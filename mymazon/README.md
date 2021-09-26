@@ -10,18 +10,23 @@
 - PG_PORT = порт БД (по умолчанию '5432')
 - REDIS_HOST = хост Redis (по умолчанию '127.0.0.1')
 - REDIS_PORT = порт Redis (по умолчанию '6379')
-  
-  либо сразу - REDIS_URL =  вида 'redis://R_HOST:R_PORT'
 - EMAIL_HOST = адрес gmail, с которого будет делаться рассылка
 - EMAIL_PASSWORD = пароль от аккаунта gmail
+- SUPERUSER_EMAIL = адрес почты для аккаунта суперюзера
+- SUPERUSER_PASSWORD = пароль для аккаунта суперюзера
 
 3) Установить зависимости `pip install -r requirements.txt`
-4) Создать начальние миграции `python manage.py migrate`
+4) Создать первичные миграции `python manage.py migrate`
 5) Создать себе суперпользователя `python manage.py createsuperuser`
 6) Запустить рабочих Celery `celery -A mymazon  worker -l INFO`
 7) Запустить сервер `python manage.py runserver`
+8) Открыть http://127.0.0.1:8000/ в браузере
 
 Синтаксис запросов как в предоставленном примере.
+
+Для запуска в контейнере нужно предоставить все те же переменные среды,
+либо прописать их в `docker-compose.yml`
+Запустить из директории проекта командой `docker-compose up` 
 
 
    

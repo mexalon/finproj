@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 from .models import Contact, ConfirmEmailToken
 from .serializers import UserSerializer, ContactSerializer
 from .signals import new_user_registered
+from .tasks import send_email
 
 
 class RegisterAccount(APIView):
@@ -44,7 +45,17 @@ class RegisterAccount(APIView):
                     user.set_password(request.data['password'])
                     user.is_active = False
                     user.save()
-                    new_user_registered.send(sender=self.__class__, user_id=user.id)
+                    token, _ = ConfirmEmailToken.objects.get_or_create(user_id=user.id)
+                    try:
+                        # new_user_registered.send(sender=self.__class__, user_id=user.id)
+                        send_email.delay("Подтверждение регистрации", f"ваш токен подтверждения {token.key}",
+                                         [user.email])
+                    except Exception:
+                        return JsonResponse({
+                            'Status': False,
+                            'Errors': f"Проблемы с почтовым сервером, ваш токен подтверждения {token.key}"
+                        })
+
                     return JsonResponse({'Status': True})
                 else:
                     return JsonResponse({'Status': False, 'Errors': user_serializer.errors})

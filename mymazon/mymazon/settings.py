@@ -22,7 +22,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-ns7i2st$^g2qzskku0a064@tz+xdwy7jh*4v7mvphw40j&1!m0'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -148,8 +148,6 @@ STATIC_URL = '/static/'
 
 AUTH_USER_MODEL = 'api.User'
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
@@ -179,9 +177,11 @@ REDIS_URL = os.getenv('REDIS_URL', f'redis://{R_HOST}:{R_PORT}')
 CELERY_BROKER_URL = REDIS_URL + "/0"
 CELERY_RESULT_BACKEND = REDIS_URL + "/1"
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = os.getenv('EMAIL_HOST', 'nik683884@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', 'werylongemailpass123')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD', 'kywt46bukrk46rcb3rq3')
 EMAIL_HOST_PORT = '465'
-EMAIL_USE_SSL = True
+#EMAIL_USE_SSL = True
 SERVER_EMAIL = EMAIL_HOST_USER

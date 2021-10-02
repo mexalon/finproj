@@ -12,7 +12,7 @@ services:
       - 8000:8000
     environment:
       - EMAIL_HOST=yourhost@gmail.com
-      - EMAIL_PASSWORD=itspass
+      - EMAIL_PASSWORD=xxx
       - PG_HOST=db
       - PG_PORT=5432
       - PG_NAME=finproj
@@ -22,6 +22,9 @@ services:
       - REDIS_PORT=6379
       - SUPERUSER_EMAIL=admin@admin.com
       - SUPERUSER_PASSWORD=admin
+      - VK_ID=id
+      - VK_SECRET=xxx
+      - VK_KEY=xxx
 
   redis:
     restart: always

@@ -14,6 +14,9 @@
 - EMAIL_PASSWORD = пароль от аккаунта gmail
 - SUPERUSER_EMAIL = адрес почты для аккаунта суперюзера
 - SUPERUSER_PASSWORD = пароль для аккаунта суперюзера
+- VK_ID = айди приложения Вконтакте для авторизации
+- VK_SECRET = секрет приложения
+- VK_KEY = секретный ключ
 
 3) Установить зависимости `pip install -r requirements.txt`
 4) Создать первичные миграции `python manage.py migrate`

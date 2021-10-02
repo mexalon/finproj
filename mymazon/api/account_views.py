@@ -8,7 +8,6 @@ from rest_framework.views import APIView
 
 from .models import Contact, ConfirmEmailToken
 from .serializers import UserSerializer, ContactSerializer
-from .signals import new_user_registered
 from .tasks import send_email
 
 
@@ -221,3 +220,16 @@ class ContactView(APIView):
                         JsonResponse({'Status': False, 'Errors': serializer.errors})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})
+
+
+class WhdaShe(APIView):
+    """
+    Приветсвие после логина через вк
+    """
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        if user.is_authenticated:
+            u = user.username
+            return JsonResponse({'Status': True, 'Message': f'Hello dear {u}'})
+
+        return JsonResponse({'Status': False, 'Error': 'Log in required'}, status=403)

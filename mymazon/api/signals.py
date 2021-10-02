@@ -1,3 +1,4 @@
+from allauth.account.signals import user_logged_in
 from django.conf import settings
 from django.core.mail import EmailMultiAlternatives
 from django.dispatch import receiver, Signal
@@ -80,3 +81,17 @@ def new_order_signal(user_id, **kwargs):
         [user.email]
     )
     msg.send()
+
+
+@receiver(user_logged_in)
+def social_login(sociallogin, user, **kwargs):
+    """добавляет юзернейм пользователю"""
+    data = sociallogin.account.extra_data
+    username = data.get('first_name', 'Anonimus') + ' ' + data.get('last_name')
+    user.username = username
+    user.save()
+
+
+
+
+

@@ -6,7 +6,8 @@ from rest_framework.routers import DefaultRouter
 from .shop_views import CategoryView, ShopView, ProductInfoView, BasketView, OrderView
 
 from .partner_views import PartnerUpdate, PartnerState, PartnerOrders
-from .account_views import RegisterAccount, LoginAccount, AccountDetails, ConfirmAccount, ContactView
+from .account_views import RegisterAccount, LoginAccount, AccountDetails, ConfirmAccount, ContactView, WhdaShe
+
 
 router = DefaultRouter()
 router.register('order', OrderView, basename='order')
@@ -27,6 +28,7 @@ urlpatterns = [
     path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
-    path('', include(router.urls))
+    path('', include(router.urls)),
+    path('whatdashet',WhdaShe.as_view(), name='wts'),
 
 ]

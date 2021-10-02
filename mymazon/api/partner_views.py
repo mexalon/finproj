@@ -6,6 +6,7 @@ from django.core.validators import URLValidator
 from django.db.models import Sum, F
 from django.http import JsonResponse
 from requests import get
+from rest_framework import throttling
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from yaml import load as load_yaml, Loader
@@ -15,10 +16,12 @@ from .serializers import ShopSerializer, OrderSerializer
 from .tasks import send_email
 
 
+
 class PartnerUpdate(APIView):
     """
     Класс для обновления прайса от поставщика
     """
+    throttle_scope = 'partner_upload'
 
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:

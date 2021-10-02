@@ -1,7 +1,7 @@
 from django.db import IntegrityError
 from django.db.models import Q, Sum, F
 from django.http import JsonResponse
-from rest_framework.generics import ListAPIView
+from rest_framework.generics import ListAPIView, GenericAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -12,7 +12,6 @@ from .models import Shop, Category, ProductInfo, Order, OrderItem
 from .permissions import OrderUpdatePermission
 from .serializers import CategorySerializer, ShopSerializer, ProductInfoSerializer, \
     OrderItemSerializer, OrderSerializer
-from .signals import new_order
 from .tasks import send_email
 
 
@@ -185,17 +184,17 @@ class OrderView(ModelViewSet):
         if {'id', 'contact'}.issubset(request.data):
             if request.data['id'].isdigit():
                 try:
-                    is_updated = Order.objects.filter(
-                        user_id=request.user.id, id=request.data['id']).update(
+                    order = Order.objects.filter(
+                        user_id=request.user.id, id=request.data['id'])
+                    is_updated = order.update(
                         contact_id=request.data['contact'],
                         state='new')
                 except IntegrityError as error:
                     return JsonResponse({'Status': False, 'Errors': 'Неправильно указаны аргументы'})
                 else:
                     if is_updated:
-                        # new_order.send(sender=self.__class__, user_id=request.user.id)
-                        send_email.delay("Заказ изменен", f"Новый статус заказа {is_updated.state}",
-                                         [is_updated.user.email])
+                        send_email.delay("Заказ изменен", f"Новый статус заказа \'new\'",
+                                         [request.user.email])
                         return JsonResponse({'Status': True})
 
         return JsonResponse({'Status': False, 'Errors': 'Не указаны все необходимые аргументы'})

@@ -31,5 +31,8 @@
 либо прописать их в `docker-compose.yml`
 Запустить из директории проекта командой `docker-compose up` 
 
+Регитрация и авторизация пользователей осуществляется через дефолтные эндпоинты
+https://django-allauth.readthedocs.io/en/latest/views.html#
+
 
    

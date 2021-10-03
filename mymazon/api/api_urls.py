@@ -1,3 +1,4 @@
+from django.http import HttpResponseRedirect
 from django.urls import path, include
 
 from django_rest_passwordreset.views import reset_password_request_token, reset_password_confirm
@@ -28,7 +29,9 @@ urlpatterns = [
     path('shops', ShopView.as_view(), name='shops'),
     path('products', ProductInfoView.as_view(), name='products'),
     path('basket', BasketView.as_view(), name='basket'),
+    path('', lambda req: HttpResponseRedirect('/accounts/login/')),
     path('', include(router.urls)),
-    path('whatdashet',WhdaShe.as_view(), name='wts'),
+    path('hello', WhdaShe.as_view(), name='hello'),
+
 
 ]
